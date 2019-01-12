@@ -20,8 +20,8 @@
         $action = "";
 	}
 
-	$currentVolumeFull = shell_exec("pactl list sinks | grep Volume");
-	$currentVolume = explode("/", $currentVolumeFull);
+	$currentSinkFull = shell_exec("pactl list sinks | grep 'Sink #'");
+	$currentSink = explode("#", $currentSinkFull);
 
 	if($radio != "" && $action != "") {
 	    if($action == "Play") {
@@ -32,13 +32,16 @@
 	    		}
 	    	}
 	    } elseif($action == "Volume -") {
-	        shell_exec("pactl set-sink-volume 2 -1%");
+	        shell_exec("pactl set-sink-volume ".trim($currentSink[1])." -1%");
 	    } elseif($action == "Volume +") {
-	        shell_exec("pactl set-sink-volume 2 +1%");
+	        shell_exec("pactl set-sink-volume ".trim($currentSink[1])." +1%");
 	    } else {
 	        shell_exec("ps aux | grep -i mplayer | awk {'print $2'} | xargs kill");
 	    }
 	}
+
+	$currentVolumeFull = shell_exec("pactl list sinks | grep Volume");
+	$currentVolume = explode("/", $currentVolumeFull);
 
 ?>
 
